@@ -1,0 +1,200 @@
+<Window x:Class="MachineLabel.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Machine Label Settings"
+        Width="520" Height="580"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        ShowInTaskbar="True"
+        Topmost="True"
+        Background="#1E1E2E">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock" x:Key="SectionHeader">
+            <Setter Property="Foreground" Value="#CDD6F4"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,12,0,6"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="FieldLabel">
+            <Setter Property="Foreground" Value="#A6ADC8"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,6,0,3"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#313244"/>
+            <Setter Property="Foreground" Value="#CDD6F4"/>
+            <Setter Property="BorderBrush" Value="#45475A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontFamily" Value="Segoe UI Emoji, Segoe UI"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#45475A"/>
+            <Setter Property="Foreground" Value="#CDD6F4"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style TargetType="Slider">
+            <Setter Property="Foreground" Value="#89B4FA"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Text="🏷️ Machine Label Settings" FontSize="18" FontWeight="Bold"
+                   Foreground="#CDD6F4" FontFamily="Segoe UI Emoji, Segoe UI"
+                   Margin="0,0,0,8"/>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Label Text -->
+                <TextBlock Text="Label Text" Style="{StaticResource SectionHeader}"/>
+                <TextBlock Text="Supports emoji! Try: 🖥️ 🔴 🟢 🔵 🟡 ⚡ 🏠 🧪 💻 🛠️ 🚀"
+                           Foreground="#6C7086" FontSize="11" Margin="0,0,0,4"
+                           FontFamily="Segoe UI Emoji, Segoe UI"/>
+                <TextBox x:Name="txtLabelText" Height="32"/>
+
+                <!-- Quick Presets -->
+                <TextBlock Text="Quick Presets" Style="{StaticResource FieldLabel}"/>
+                <WrapPanel Margin="0,2,0,6">
+                    <Button Content="🖥️ Machine Name" Click="Preset_MachineName" Margin="0,0,4,4" FontFamily="Segoe UI Emoji, Segoe UI"/>
+                    <Button Content="🔴 PROD" Click="Preset_Prod" Margin="0,0,4,4" Background="#F38BA8" Foreground="#1E1E2E" FontFamily="Segoe UI Emoji, Segoe UI"/>
+                    <Button Content="🟡 STAGING" Click="Preset_Staging" Margin="0,0,4,4" Background="#F9E2AF" Foreground="#1E1E2E" FontFamily="Segoe UI Emoji, Segoe UI"/>
+                    <Button Content="🟢 DEV" Click="Preset_Dev" Margin="0,0,4,4" Background="#A6E3A1" Foreground="#1E1E2E" FontFamily="Segoe UI Emoji, Segoe UI"/>
+                    <Button Content="🔵 TEST" Click="Preset_Test" Margin="0,0,4,4" Background="#89B4FA" Foreground="#1E1E2E" FontFamily="Segoe UI Emoji, Segoe UI"/>
+                </WrapPanel>
+
+                <!-- Colors -->
+                <TextBlock Text="Colors" Style="{StaticResource SectionHeader}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Background Color" Style="{StaticResource FieldLabel}" Grid.Column="0"/>
+                    <TextBlock Text="Text Color" Style="{StaticResource FieldLabel}" Grid.Column="2"/>
+
+                    <Grid Grid.Row="1" Grid.Column="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="36"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="txtBgColor" TextChanged="Color_Changed"/>
+                        <Border x:Name="bgPreview" Grid.Column="1" Width="30" Height="30"
+                                CornerRadius="4" Margin="4,0,0,0" BorderBrush="#45475A" BorderThickness="1"/>
+                    </Grid>
+
+                    <Grid Grid.Row="1" Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="36"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="txtFgColor" TextChanged="Color_Changed"/>
+                        <Border x:Name="fgPreview" Grid.Column="1" Width="30" Height="30"
+                                CornerRadius="4" Margin="4,0,0,0" BorderBrush="#45475A" BorderThickness="1"/>
+                    </Grid>
+                </Grid>
+
+                <!-- Color swatches -->
+                <TextBlock Text="Quick Colors" Style="{StaticResource FieldLabel}"/>
+                <WrapPanel Margin="0,2,0,4">
+                    <Button Content="  " Background="#F38BA8" Click="Swatch_Click" Tag="#F38BA8" Margin="0,0,3,3" Width="28" Height="28"/>
+                    <Button Content="  " Background="#FF6B35" Click="Swatch_Click" Tag="#FF6B35" Margin="0,0,3,3" Width="28" Height="28"/>
+                    <Button Content="  " Background="#F9E2AF" Click="Swatch_Click" Tag="#F9E2AF" Margin="0,0,3,3" Width="28" Height="28"/>
+                    <Button Content="  " Background="#A6E3A1" Click="Swatch_Click" Tag="#A6E3A1" Margin="0,0,3,3" Width="28" Height="28"/>
+                    <Button Content="  " Background="#94E2D5" Click="Swatch_Click" Tag="#94E2D5" Margin="0,0,3,3" Width="28" Height="28"/>
+                    <Button Content="  " Background="#89B4FA" Click="Swatch_Click" Tag="#89B4FA" Margin="0,0,3,3" Width="28" Height="28"/>
+                    <Button Content="  " Background="#B4BEFE" Click="Swatch_Click" Tag="#B4BEFE" Margin="0,0,3,3" Width="28" Height="28"/>
+                    <Button Content="  " Background="#CBA6F7" Click="Swatch_Click" Tag="#CBA6F7" Margin="0,0,3,3" Width="28" Height="28"/>
+                    <Button Content="  " Background="#F5C2E7" Click="Swatch_Click" Tag="#F5C2E7" Margin="0,0,3,3" Width="28" Height="28"/>
+                    <Button Content="  " Background="#585B70" Click="Swatch_Click" Tag="#585B70" Margin="0,0,3,3" Width="28" Height="28"/>
+                    <Button Content="  " Background="#1E1E2E" Click="Swatch_Click" Tag="#1E1E2E" Margin="0,0,3,3" Width="28" Height="28"/>
+                    <Button Content="  " Background="#FFFFFF" Click="Swatch_Click" Tag="#FFFFFF" Margin="0,0,3,3" Width="28" Height="28"/>
+                </WrapPanel>
+
+                <!-- Font -->
+                <TextBlock Text="Appearance" Style="{StaticResource SectionHeader}"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Font Size" Style="{StaticResource FieldLabel}" Grid.Row="0"/>
+                    <Slider x:Name="sliderFontSize" Minimum="9" Maximum="24" TickFrequency="1"
+                            IsSnapToTickEnabled="True" Grid.Row="1"
+                            ValueChanged="Slider_Changed"/>
+
+                    <TextBlock x:Name="lblFontSize" Style="{StaticResource FieldLabel}"
+                               Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right"/>
+
+                    <CheckBox x:Name="chkBold" Content="Bold" Foreground="#CDD6F4"
+                              Grid.Row="1" Grid.Column="2" VerticalAlignment="Center"/>
+
+                    <TextBlock Text="Opacity" Style="{StaticResource FieldLabel}" Grid.Row="3"/>
+                    <Slider x:Name="sliderOpacity" Minimum="0.3" Maximum="1.0" TickFrequency="0.05"
+                            IsSnapToTickEnabled="True" Grid.Row="4"
+                            ValueChanged="Slider_Changed"/>
+                    <TextBlock x:Name="lblOpacity" Style="{StaticResource FieldLabel}"
+                               Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right"/>
+
+                    <TextBlock Text="Corner Radius" Style="{StaticResource FieldLabel}" Grid.Row="6"/>
+                    <Slider x:Name="sliderCorner" Minimum="0" Maximum="16" TickFrequency="1"
+                            IsSnapToTickEnabled="True" Grid.Row="7"
+                            ValueChanged="Slider_Changed"/>
+                    <TextBlock x:Name="lblCorner" Style="{StaticResource FieldLabel}"
+                               Grid.Row="6" Grid.Column="2" HorizontalAlignment="Right"/>
+                </Grid>
+
+                <!-- Preview -->
+                <TextBlock Text="Preview" Style="{StaticResource SectionHeader}"/>
+                <Border x:Name="previewBorder" CornerRadius="4" Padding="10,4"
+                        HorizontalAlignment="Left" Margin="0,0,0,8">
+                    <TextBlock x:Name="previewText" FontFamily="Segoe UI Emoji, Segoe UI"
+                               VerticalAlignment="Center"/>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="Reset Position" Click="ResetPosition_Click" Margin="0,0,8,0"
+                    Background="#313244"/>
+            <Button Content="Cancel" Click="Cancel_Click" Margin="0,0,8,0"
+                    Background="#313244"/>
+            <Button x:Name="btnSave" Content="💾 Save" Click="Save_Click"
+                    Background="#89B4FA" Foreground="#1E1E2E" FontWeight="SemiBold"
+                    FontFamily="Segoe UI Emoji, Segoe UI"/>
+        </StackPanel>
+    </Grid>
+</Window>

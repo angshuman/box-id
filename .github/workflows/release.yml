@@ -1,0 +1,110 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a GitHub release'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - rid: win-x64
+            name: MachineLabel-win-x64
+          - rid: win-arm64
+            name: MachineLabel-win-arm64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore -r ${{ matrix.rid }}
+
+      - name: Publish
+        run: >
+          dotnet publish -c Release
+          -r ${{ matrix.rid }}
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+          -p:DebugType=none
+          -o publish/${{ matrix.name }}
+
+      - name: Sign binary (if certificate available)
+        if: env.SIGN_CERT_BASE64 != ''
+        env:
+          SIGN_CERT_BASE64: ${{ secrets.SIGN_CERT_BASE64 }}
+          SIGN_CERT_PASSWORD: ${{ secrets.SIGN_CERT_PASSWORD }}
+        shell: pwsh
+        run: |
+          $certBytes = [Convert]::FromBase64String($env:SIGN_CERT_BASE64)
+          $certPath = Join-Path $env:RUNNER_TEMP "codesign.pfx"
+          [IO.File]::WriteAllBytes($certPath, $certBytes)
+
+          $exe = Get-ChildItem "publish/${{ matrix.name }}/MachineLabel.exe"
+          & signtool sign /f $certPath /p $env:SIGN_CERT_PASSWORD /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
+
+          Remove-Item $certPath -Force
+
+      - name: Create ZIP archive
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "publish/${{ matrix.name }}/*" -DestinationPath "publish/${{ matrix.name }}.zip"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: publish/${{ matrix.name }}.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.create_release)
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name || 'manual-release' }}
+          name: "Machine Label ${{ github.ref_name || 'manual-release' }}"
+          body: |
+            ## 🏷️ Machine Label
+
+            A persistent text label on your Windows taskbar to identify which machine you're on.
+
+            ### Downloads
+            | File | Platform |
+            |------|----------|
+            | `MachineLabel-win-x64.zip` | Windows x64 (Intel/AMD) |
+            | `MachineLabel-win-arm64.zip` | Windows ARM64 |
+
+            ### Quick Start
+            1. Download the ZIP for your platform
+            2. Extract and run `MachineLabel.exe`
+            3. Right-click the label on the taskbar to configure
+          draft: false
+          prerelease: false
+          files: artifacts/**/*.zip
