@@ -1,0 +1,59 @@
+name: Publish to NuGet
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version_override:
+        description: 'Version override (e.g. 1.2.3). Leave empty to use csproj version.'
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  nuget:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Determine version
+        id: version
+        shell: pwsh
+        run: |
+          $ver = "${{ inputs.version_override }}"
+          if (-not $ver) {
+            # Extract from tag (v1.2.3 -> 1.2.3) or fall back to csproj
+            $tag = "${{ github.event.release.tag_name }}"
+            if ($tag -match '^v?(\d+\.\d+\.\d+.*)$') {
+              $ver = $Matches[1]
+            } else {
+              $ver = (Select-Xml -Path MachineLabel.csproj -XPath '//Version').Node.InnerText
+            }
+          }
+          echo "VERSION=$ver" >> $env:GITHUB_OUTPUT
+          Write-Host "Publishing version: $ver"
+
+      - name: Pack
+        run: >
+          dotnet pack -c Release
+          -p:PackageVersion=${{ steps.version.outputs.VERSION }}
+          -p:Version=${{ steps.version.outputs.VERSION }}
+          -o nupkg
+
+      - name: Push to NuGet.org
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: >
+          dotnet nuget push "nupkg/*.nupkg"
+          --api-key ${{ secrets.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate

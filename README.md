@@ -39,11 +39,31 @@ You're RDP'd into 5 machines. You have 4 terminal sessions open. One is prod. Wh
 - 🎛️ **Customizable** — font size, opacity, corner radius, bold, padding
 - 🪶 **Lightweight** — single-instance WPF app, minimal resource usage
 
-## Quick Start
+## Install
 
-### Download
+### Option 1 — .NET Global Tool (recommended)
 
-Grab the latest release from the [Releases](https://github.com/angshuman/box-id/releases) page — no install needed, just extract and run.
+```
+dotnet tool install -g BoxId
+box-id
+```
+
+Update later with:
+```
+dotnet tool update -g BoxId
+```
+
+### Option 2 — PowerShell one-liner
+
+No .NET SDK required. Downloads the latest release and adds to PATH:
+
+```powershell
+irm https://raw.githubusercontent.com/angshuman/box-id/main/install.ps1 | iex
+```
+
+### Option 3 — Manual download
+
+Grab the latest ZIP from the [Releases](https://github.com/angshuman/box-id/releases) page, extract, and run `MachineLabel.exe`.
 
 ### Build from source
 

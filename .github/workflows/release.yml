@@ -89,22 +89,32 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name || 'manual-release' }}
-          name: "Machine Label ${{ github.ref_name || 'manual-release' }}"
+          name: "Box ID ${{ github.ref_name || 'manual-release' }}"
           body: |
-            ## 🏷️ Machine Label
+            ## 📦 Box ID ${{ github.ref_name }}
 
             A persistent text label on your Windows taskbar to identify which machine you're on.
 
-            ### Downloads
+            ### Install
+
+            **Option 1 — .NET Global Tool** (recommended, auto-updates PATH)
+            ```
+            dotnet tool install -g BoxId
+            box-id
+            ```
+
+            **Option 2 — PowerShell one-liner** (no .NET SDK needed)
+            ```powershell
+            irm https://raw.githubusercontent.com/angshuman/box-id/main/install.ps1 | iex
+            ```
+
+            **Option 3 — Manual download**
             | File | Platform |
             |------|----------|
             | `MachineLabel-win-x64.zip` | Windows x64 (Intel/AMD) |
             | `MachineLabel-win-arm64.zip` | Windows ARM64 |
 
-            ### Quick Start
-            1. Download the ZIP for your platform
-            2. Extract and run `MachineLabel.exe`
-            3. Right-click the label on the taskbar to configure
+            Extract the ZIP and run `MachineLabel.exe`.
           draft: false
           prerelease: false
           files: artifacts/**/*.zip

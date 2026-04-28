@@ -11,11 +11,28 @@
     <SelfContained>false</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Version>1.0.0</Version>
-    <Description>Machine Label - Show a persistent text label on the Windows taskbar</Description>
+    <Description>Box ID - A persistent color-coded text label on your Windows taskbar to identify which machine you're on</Description>
+
+    <!-- NuGet tool packaging -->
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>box-id</ToolCommandName>
+    <PackageId>BoxId</PackageId>
+    <Authors>angshuman</Authors>
+    <PackageProjectUrl>https://github.com/angshuman/box-id</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/angshuman/box-id</RepositoryUrl>
+    <PackageTags>taskbar;label;machine;identity;rdp;devops;windows</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="docs\icon.png" Pack="true" PackagePath="\" Condition="Exists('docs\icon.png')" />
   </ItemGroup>
 
 </Project>
