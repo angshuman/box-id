@@ -10,6 +10,17 @@
   <img src="docs/taskbar-examples.png" alt="Box ID showing different environment labels on the Windows taskbar" width="900"/>
 </p>
 
+<p align="center">
+  <img src="docs/taskbar-prod.png" alt="Production server label" width="440"/>
+  &nbsp;
+  <img src="docs/taskbar-dev.png" alt="Dev server label" width="440"/>
+</p>
+<p align="center">
+  <img src="docs/taskbar-staging.png" alt="Staging server label" width="440"/>
+  &nbsp;
+  <img src="docs/taskbar-test.png" alt="Test server label" width="440"/>
+</p>
+
 ## The Problem
 
 You're RDP'd into 5 machines. You have 4 terminal sessions open. One is prod. Which one? 😰
