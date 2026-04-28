@@ -41,19 +41,52 @@ You're RDP'd into 5 machines. You have 4 terminal sessions open. One is prod. Wh
 
 ## Install
 
-### Option 1 — .NET Global Tool (recommended)
+> **Note:** No official release has been published yet. Use **Build from source** to run Box ID today.  
+> The `.NET Global Tool` and PowerShell installer options will be available once the first release is published.
 
+### Build from source (works now)
+
+**Prerequisites**
+
+- Windows 10 or 11 (64-bit)
+- [Git](https://git-scm.com/downloads)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+
+**Steps**
+
+```powershell
+# 1. Clone the repository
+git clone https://github.com/angshuman/box-id.git
+cd box-id
+
+# 2. Run directly
+dotnet run
+
+# — OR — publish a self-contained single-file exe you can share / copy
+dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true
+# Output: publish\win-x64\MachineLabel.exe
 ```
+
+Double-click `MachineLabel.exe` (or the published binary) and a label appears on your taskbar.
+
+---
+
+### Coming soon — Option 1: .NET Global Tool
+
+Once published to NuGet, install with a single command (no clone needed):
+
+```powershell
 dotnet tool install -g BoxId
 box-id
 ```
 
 Update later with:
-```
+
+```powershell
 dotnet tool update -g BoxId
 ```
 
-### Option 2 — PowerShell one-liner
+### Coming soon — Option 2: PowerShell one-liner
 
 No .NET SDK required. Downloads the latest release and adds to PATH:
 
@@ -61,23 +94,15 @@ No .NET SDK required. Downloads the latest release and adds to PATH:
 irm https://raw.githubusercontent.com/angshuman/box-id/main/install.ps1 | iex
 ```
 
-### Option 3 — Manual download
+### Coming soon — Option 3: Manual download
 
 Grab the latest ZIP from the [Releases](https://github.com/angshuman/box-id/releases) page, extract, and run `MachineLabel.exe`.
 
-### Build from source
-
-```bash
-dotnet build
-dotnet run
-
-# Or publish a self-contained single-file exe
-dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true
-```
+---
 
 ## Usage
 
-1. **Run** `MachineLabel.exe` — a label appears on your taskbar
+1. **Run** `MachineLabel.exe` (or `dotnet run` from the repo) — a label appears on your taskbar
 2. **Right-click** the label → settings, copy hostname, exit
 3. **Double-click** the label → open settings
 4. **Drag** the label left/right to reposition it on the taskbar
